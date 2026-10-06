@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 )
 
 // model holds all application state. In bubbletea's Elm architecture
@@ -24,7 +24,7 @@ func (m model) Init() tea.Cmd {
 // receiver means state changes are made by returning a modified copy.
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
@@ -37,15 +37,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-// View renders the current state to a string. bubbletea repaints the
-// terminal with whatever View returns after each Update.
-func (m model) View() string {
-	return fmt.Sprintf(`Counter: %d
+// View renders the current state. bubbletea repaints the terminal with
+// whatever View returns after each Update. In bubbletea v2 the view is a
+// tea.View (built with tea.NewView), not a plain string.
+func (m model) View() tea.View {
+	return tea.NewView(fmt.Sprintf(`Counter: %d
 
 + / up    increment
 - / down  decrement
 q / ctrl+c  quit
-`, m.count)
+`, m.count))
 }
 
 func main() {
